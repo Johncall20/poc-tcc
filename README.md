@@ -8,8 +8,10 @@ Prova de conceito da disciplina de Desenvolvimento de Aplicativos Híbridos. Per
 
 ```bash
 npm install
-npm test                 # 25 testes: decodificador igual ao backend + máquina de estados
+npm test                 # 30 testes: decodificador igual ao backend, máquina de estados e simulador
 ```
+
+Sem o ESP32 por perto, ligue o seletor **Simulador** na tela: os dados vêm do `LeitorSimulado` do backend, portado para `ble/FonteSimulada.ts`, e a tela avisa *DADOS SIMULADOS*. O Bluetooth não é usado nesse modo.
 
 Gerar e instalar a development build (escolha um):
 
@@ -37,5 +39,6 @@ No iOS é o mesmo caminho (`eas build --platform ios --profile development` ou `
 | `App.tsx` | A tela: estado da ligação, RPM grande e os cartões dos parâmetros |
 | `ble/protocolo.ts` | Remonta as linhas JSON dos pedaços de 20 bytes e decodifica a amostra — mesma regra do `leitor.py` do backend |
 | `ble/LeitorEsp32.ts` | Procura `E36-DS2`, conecta, assina a TX do Nordic UART e reconecta sozinho |
+| `ble/FonteSimulada.ts` | O `LeitorSimulado` do backend no celular: gera as linhas do firmware e passa pelo mesmo decodificador, sem rádio |
 | `ble/permissoes.ts` | Pede "Dispositivos próximos" no Android 12+ (ou localização no 11 e anteriores) |
 | `ferramentas/gerar_vetores.py` | Gera os vetores de teste passando bytes pelo decodificador do backend |

@@ -16,9 +16,24 @@ Todos são conferidos **no aparelho físico** (emulador não tem Bluetooth), com
 **Verificado em:** ( ) aparelho físico — modelo: ______ / Android ou iOS: ______ ( ) emulador
 **Resultado:** ( ) passou ( ) reprovou
 
+## Modo Simulador (sem o ESP32)
+
+Para a apresentação sem o hardware. Liga o seletor **Simulador** e toca em *Conectar*. Estes critérios conferem a tela, os estados e o decodificador; **não** provam o Bluetooth, que continua pendente acima.
+
+- [ ] A faixa *DADOS SIMULADOS* aparece assim que o Simulador é ligado, e some ao desligá-lo.
+- [ ] Em até 1 s a barra mostra *Conectado — simulador do TCC, sem Bluetooth* e o RPM sobe e desce sozinho.
+- [ ] A taxa fica perto de 5 Hz e *descartadas* fica em 0 (as linhas passam pelo mesmo montador e decodificador da fonte real).
+- [ ] De vez em quando um cartão mostra *sem resposta* por uma leitura (o simulador apaga um bit de `valid` em ~6% delas, como o do backend).
+- [ ] A cada ~30 s há uma queda simulada de 5 s: a barra vai a *Procurando*, a *última leitura* fica vermelha depois de 3 s e o app volta a *Conectado* sozinho.
+- [ ] Com a fonte ligada, o seletor fica travado (*desconecte para trocar a fonte*).
+
+**Verificado em:** ( ) aparelho físico — modelo: ______
+**Resultado:** ( ) passou ( ) reprovou
+
 ## Já verificado sem o aparelho (`npm test`)
 
 Não substitui os critérios acima, mas tira do caminho os erros de lógica antes de ir para o carro:
 
 - `ble/protocolo.test.ts`: 118 linhas geradas pelo `leitor.py` do backend (pedaços de 20 bytes, pedaços aleatórios, CRLF, lixo no meio, firmware antigo sem extras, conexão aberta no meio de uma linha) dão o mesmo resultado no app, campo a campo.
 - `ble/LeitorEsp32.test.ts`: com um BleManager de mentira, a ordem *scan → connect → retrieveServices → startNotification*, a reconexão após queda, a nova procura quando o módulo não aparece, o prazo de 10 s do connect e o Bluetooth desligado.
+- `ble/FonteSimulada.test.ts`: o simulador conecta, entrega ~5 amostras/s nas faixas do `LeitorSimulado`, apaga bits de `valid`, simula a queda e volta, e para ao desligar.

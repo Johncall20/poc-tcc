@@ -1,6 +1,7 @@
 /*
   A unica tela da prova de conceito: o celular le o ESP32-C3 do carro pelo
-  Bluetooth, sem o computador com o backend no meio.
+  Bluetooth, sem o computador com o backend no meio. Sem o ESP32 por perto,
+  o seletor troca para o simulador, e a tela avisa que os dados sao simulados.
 */
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -8,11 +9,12 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { respondeu } from './ble/protocolo';
-import { taxaHz, useLeitorEsp32 } from './ble/useLeitorEsp32';
+import { taxaHz, useLeitorEsp32, type Modo } from './ble/useLeitorEsp32';
 import { BarraDeEstado } from './components/BarraDeEstado';
 import { CartaoParametro } from './components/CartaoParametro';
 import { cores } from './components/cores';
 import { EXTRAS, NUCLEO, formatar } from './components/parametros';
+import { SeletorFonte } from './components/SeletorFonte';
 
 /** Sem amostra ha mais que isto, o numero na tela e velho e apaga. */
 const IDADE_MAXIMA_S = 3;
@@ -29,7 +31,8 @@ function useAgora(ligado: boolean): number {
 }
 
 function Painel() {
-  const leitor = useLeitorEsp32();
+  const [modo, setModo] = useState<Modo>('bluetooth');
+  const leitor = useLeitorEsp32(modo);
   const { amostra } = leitor;
   const ultima = leitor.chegadas[leitor.chegadas.length - 1];
   // O relogio anda enquanto houver numero na tela, mesmo desconectado:
@@ -46,6 +49,8 @@ function Painel() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={estilos.conteudo}>
         <Text style={estilos.titulo}>Telemetria E36 · BLE direto</Text>
+
+        <SeletorFonte modo={modo} bloqueado={leitor.ativo} aoTrocar={setModo} />
 
         <BarraDeEstado
           estado={leitor.estado}

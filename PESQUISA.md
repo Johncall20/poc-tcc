@@ -44,11 +44,23 @@ Observação sobre a página do MCP: a versão em Markdown (`/eas/ai/mcp.md`, qu
 - Como percebi: lendo o diff antes de aceitar — se o prazo vencesse, a conexão pendente ficaria sem dono e poderia abrir depois sem ninguém para fechá-la.
 - O certo: guardar o id antes do `connect`, para o tratamento de erro cancelar a conexão pendente (`disconnect`). Há um teste para isso em `ble/LeitorEsp32.test.ts`.
 
+- Pedido: como gerar a development build para testar no celular.
+- O que veio: a IA mandou gerar a build de Android pelo EAS sem perguntar qual era o celular.
+- Como percebi: o celular era um iPhone; abrindo o projeto nele, o app quebrou com `BleManagerModule not found` (era o binário errado, sem o módulo nativo).
+- O certo: perguntar a plataforma antes. No iPhone sem conta paga, a build é local, no Mac, com `npx expo run:ios --device`.
+
+- Pedido: publicar o projeto no GitHub.
+- O que veio: o comando `git push -u origin main`.
+- Como percebi: o Git respondeu `src refspec main does not match any`; o projeto entregue pela IA estava no branch `master`.
+- O certo: `git branch -M main` antes do push (é o passo 2 da seção 5.1 da apostila).
+
 - [Registre aqui os erros do Copilot quando rodar os prompts de verificação e de implementação da apostila.]
 
 ## Resultado e próximos passos no TCC
 - O que já está demonstrado sem o aparelho: o app decodifica o fluxo do ESP32 exatamente como o backend (118 linhas geradas pelo `leitor.py`, incluindo pedaços de 20 bytes, lixo e CRLF) e a máquina de estados reconecta sozinha (25 testes em `npm test`).
-- O que falta demonstrar no aparelho: os critérios do `CRITERIOS.md` com o ESP32 de verdade. [preencher depois do teste]
+- Development build instalada e rodando num iPhone (iOS 26.5) em 09/11/2026. Para chegar lá foi preciso: baixar a plataforma iOS no Xcode (`xcodebuild -downloadPlatform iOS`) e fazer a primeira assinatura pelo próprio Xcode (Signing & Capabilities, Personal Team), porque o `expo run:ios` sozinho não conseguiu criar o perfil. No Expo Go o mesmo código quebra com `BleManagerModule not found`, o que confirma na prática que BLE exige development build.
+- Sem o ESP32 disponível para a apresentação, a demonstração usa o **modo Simulador** do app: o `LeitorSimulado` do backend portado para `ble/FonteSimulada.ts`. Ele monta as linhas no formato do firmware, corta em pedaços de 20 bytes e passa pelo mesmo `MontadorDeLinha` e `decodificar` da fonte real. A tela mostra "DADOS SIMULADOS" o tempo todo.
+- O que o simulador **não** prova: o rádio Bluetooth, a permissão, a conexão e a recepção pelo `react-native-ble-manager`. Esses critérios do `CRITERIOS.md` continuam pendentes até o teste com o ESP32. [atualizar depois do teste]
 - Achado no backend durante a pesquisa: no `leitor.py`, o `decodificar` só trata `JSONDecodeError`. Uma linha com campo não numérico (`"rpm":"abc"`) ou extra nulo (`"load":null`) levanta `ValueError`/`TypeError`, cai no `except` do laço do `LeitorBLE` e derruba a conexão BLE. O app descarta só a linha.
 - O que muda no TCC: se os critérios passarem, o celular pode ser a central dentro do carro, e o computador fica para a análise das sessões depois. Próximo passo natural: o celular guardar as amostras e enviá-las ao backend quando houver rede.
 - A conferir no firmware: se o ESP32 aceita mais de uma central ao mesmo tempo (celular e backend juntos) ou só uma.
