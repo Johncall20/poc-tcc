@@ -13,22 +13,21 @@ Todos são conferidos **no aparelho físico** (emulador não tem Bluetooth), com
 - [ ] **Erro: permissão negada (Android).** Negando *Dispositivos próximos* no primeiro *Conectar*, a barra mostra *Erro — permissão de "Dispositivos próximos" negada* e o app continua aberto.
 - [ ] **Fechar e abrir.** Fechando o app e abrindo de novo, ele começa em *Desligado* e só procura o módulo depois de tocar em *Conectar*.
 
-**Verificado em:** ( ) aparelho físico — modelo: ______ / Android ou iOS: ______ ( ) emulador
-**Resultado:** ( ) passou ( ) reprovou
+**Situação:** não testado até a entrega — o ESP32 não estava disponível. A development build já roda no iPhone (iOS 26.5); falta conectar no módulo de verdade.
 
 ## Modo Simulador (sem o ESP32)
 
 Para a apresentação sem o hardware. Liga o seletor **Simulador** e toca em *Conectar*. Estes critérios conferem a tela, os estados e o decodificador; **não** provam o Bluetooth, que continua pendente acima.
 
-- [ ] A faixa *DADOS SIMULADOS* aparece assim que o Simulador é ligado, e some ao desligá-lo.
-- [ ] Em até 1 s a barra mostra *Conectado — simulador do TCC, sem Bluetooth* e o RPM sobe e desce sozinho.
-- [ ] A taxa fica perto de 5 Hz e *descartadas* fica em 0 (as linhas passam pelo mesmo montador e decodificador da fonte real).
-- [ ] De vez em quando um cartão mostra *sem resposta* por uma leitura (o simulador apaga um bit de `valid` em ~6% delas, como o do backend).
-- [ ] A cada ~30 s há uma queda simulada de 5 s: a barra vai a *Procurando*, a *última leitura* fica vermelha depois de 3 s e o app volta a *Conectado* sozinho.
-- [ ] Com a fonte ligada, o seletor fica travado (*desconecte para trocar a fonte*).
+- [x] A faixa *DADOS SIMULADOS* aparece assim que o Simulador é ligado, e some ao desligá-lo.
+- [x] Em até 1 s a barra mostra *Conectado — simulador do TCC, sem Bluetooth* e o RPM sobe e desce sozinho.
+- [x] A taxa fica perto de 5 Hz e *descartadas* fica em 0 (as linhas passam pelo mesmo montador e decodificador da fonte real).
+- [x] De vez em quando um cartão mostra *sem resposta* por uma leitura (o simulador apaga um bit de `valid` em ~6% delas, como o do backend).
+- [x] A cada ~30 s há uma queda simulada de 5 s: a barra vai a *Procurando*, a *última leitura* fica vermelha depois de 3 s e o app volta a *Conectado* sozinho.
+- [x] Com a fonte ligada, o seletor fica travado (*desconecte para trocar a fonte*).
 
-**Verificado em:** ( ) aparelho físico — modelo: ______
-**Resultado:** ( ) passou ( ) reprovou
+**Verificado em:** (x) aparelho físico — iPhone, iOS 26.5, development build, em 09/11/2026
+**Resultado:** (x) passou ( ) reprovou
 
 ## Já verificado sem o aparelho (`npm test`)
 
